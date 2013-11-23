@@ -1,3 +1,5 @@
+var util = require('util');
+
 function Key(root, cb) {
     this.root = root;
     if (cb) cb(this);
@@ -13,8 +15,8 @@ Key.prototype.valueOf = function () { return this.root; };
 Key.prototype.toString = function () { return this.root; };
 
 Key.prototype.prop = function (name) {
-    Key.prototype[name] = function () {
-        return new Key(this.root + Key._options.propertySep + name);
+    this.constructor.prototype[name] = function () {
+        return new this.constructor(this.root + Key._options.propertySep + name);
     };
 };
 
@@ -30,12 +32,18 @@ Key.prototype.collection = function (plural, singular, cbs) {
 
     singular = singular || plural.substr(0, plural.length - 1);
 
-    Key.prototype[plural] = function () {
-        return new Key(this.root + Key._options.collectionSep + plural, cbs && cbs.collection);
+    var SubKey = function(root, cb) {
+        this.root = root;
+        if (cb) cb(this);
+    };
+    util.inherits(SubKey, this.constructor);
+    
+    this.constructor.prototype[plural] = function () {
+        return new SubKey(this.root + Key._options.collectionSep + plural, cbs && cbs.collection);
     };
 
-    Key.prototype[singular] = function (id) {
-        return new Key(this.root + Key._options.collectionSep + singular + Key._options.memberSep + id, cbs && cbs.member);
+    this.constructor.prototype[singular] = function (id) {
+        return new SubKey(this.root + Key._options.collectionSep + singular + Key._options.memberSep + id, cbs && cbs.member);
     };
 };
 
