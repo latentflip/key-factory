@@ -19,6 +19,15 @@ Key.prototype.prop = function (name) {
 };
 
 Key.prototype.collection = function (plural, singular, cbs) {
+    if (arguments.length === 0 ) throw 'Collection name required';
+
+    //Singular is optional
+    if (arguments.length === 2 && typeof singular !== 'string') {
+        cbs = singular;
+        singular = undefined;
+    }
+
+
     singular = singular || plural.substr(0, plural.length - 1);
 
     Key.prototype[plural] = function () {
