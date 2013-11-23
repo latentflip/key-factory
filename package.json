@@ -1,0 +1,24 @@
+{
+  "name": "key-factory",
+  "version": "0.0.1",
+  "description": "Creates keys for nosql like dbs.",
+  "main": "key.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "author": "Philip Roberts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/latentflip/key-factory.git"
+  },
+  "keywords": [
+    "redis",
+    "nosql",
+    "key",
+    "factory"
+  ],
+  "bugs": {
+    "url": "https://github.com/latentflip/key-factory/issues"
+  }
+}
