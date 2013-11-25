@@ -1,6 +1,6 @@
 {
   "name": "key-factory",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Creates keys for nosql like dbs.",
   "main": "key.js",
   "scripts": {
