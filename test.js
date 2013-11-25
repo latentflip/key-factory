@@ -1,7 +1,7 @@
 var assert = require('assert');
 var Key = require('./key.js');
 
-var factory = new Key('myapp', function (f) {
+var factory = new Key({ namespace: 'myapp' }, function (f) {
     f.prop('version');
     f.collection('users', 'u'); //custom singularization
     f.collection('teams', {
@@ -23,8 +23,6 @@ var factory = new Key('myapp', function (f) {
             f.prop('foo');
         }
     });
-
-
 });
 
 assert.equal( factory.version(), 'myapp.version' );
@@ -38,9 +36,34 @@ assert.equal( factory.team('Foo').tasks(), 'myapp:team#Foo.tasks' );
 
 assert.throws( function() { factory.taskSeq(); }, Error, 'Should die');
 
-
 assert.equal( factory.foo('FooThing').bar(), 'myapp:foo#FooThing.bar' );
 assert.equal( factory.bar('BarThing').foo(), 'myapp:bar#BarThing.foo' );
+
+
+
+//Should be able to have multiple keys factories!
+var nothing = new Key({ namespace: 'myapp' });
+assert.throws( function () { nothing.version(); } );
+
+
+var unnamespaced = new Key(function (f) {
+    f.prop('version');
+    f.collection('users', 'u'); //custom singularization
+});
+
+assert.equal( unnamespaced.version(), 'version' );
+assert.equal( unnamespaced.users(), 'users' );
+assert.equal( unnamespaced.u('123'), 'u#123' );
+
+
+var stringNamespaced = new Key('namespace', function (f) {
+    f.prop('version');
+    f.collection('users', 'u'); //custom singularization
+});
+
+assert.equal( stringNamespaced.version(), 'namespace.version' );
+assert.equal( stringNamespaced.users(), 'namespace:users' );
+assert.equal( stringNamespaced.u('123'), 'namespace:u#123' );
 
 
 

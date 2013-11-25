@@ -1,7 +1,22 @@
 var util = require('util');
 
-function Key(root, cb) {
-    this.root = root;
+var joinKeys = function(root, seperator, to) {
+    if (!root || root === '')
+        return ''+to;
+    else
+        return root + seperator + to;
+};
+
+
+function Key(options, cb) {
+    if (typeof options === 'string') {
+        options = { namespace: options };
+    } else if (!cb && typeof options === 'function') {
+        cb = options;
+        options = {};
+    }
+
+    this.root = options.namespace || '';
     if (cb) cb(this);
 }
 
@@ -16,7 +31,7 @@ Key.prototype.toString = function () { return this.root; };
 
 Key.prototype.prop = function (name) {
     this.constructor.prototype[name] = function () {
-        return new this.constructor(this.root + Key._options.propertySep + name);
+        return new this.constructor(joinKeys(this.root, Key._options.propertySep, name));
     };
 };
 
@@ -37,14 +52,24 @@ Key.prototype.collection = function (plural, singular, cbs) {
         if (cb) cb(this);
     };
     util.inherits(SubKey, this.constructor);
-    
+
     this.constructor.prototype[plural] = function () {
-        return new SubKey(this.root + Key._options.collectionSep + plural, cbs && cbs.collection);
+        return new SubKey(joinKeys(this.root, Key._options.collectionSep, plural), cbs && cbs.collection);
     };
 
     this.constructor.prototype[singular] = function (id) {
-        return new SubKey(this.root + Key._options.collectionSep + singular + Key._options.memberSep + id, cbs && cbs.member);
+        return new SubKey(joinKeys(this.root, Key._options.collectionSep, singular) + Key._options.memberSep + id, cbs && cbs.member);
     };
 };
 
-module.exports = Key;
+module.exports = function (options, cb) {
+    var Factory = function Factory(options, cb) {
+        Key.call(this, options, cb);
+    };
+
+    util.inherits(Factory, Key);
+
+    var factory = new Factory(options, cb);
+    
+    return factory;
+};
