@@ -58,6 +58,10 @@ Key.prototype.collection = function (plural, singular, cbs) {
     };
 
     this.constructor.prototype[singular] = function (id) {
+        var key = joinKeys(this.root, Key._options.collectionSep, singular) + Key._options.memberSep + id;
+
+        if (!id) { throw Error("Getting '" + singular + "' requires an id, as you probably dind't mean to get the key: " + key); }
+        
         return new SubKey(joinKeys(this.root, Key._options.collectionSep, singular) + Key._options.memberSep + id, cbs && cbs.member);
     };
 };
@@ -70,6 +74,6 @@ module.exports = function (options, cb) {
     util.inherits(Factory, Key);
 
     var factory = new Factory(options, cb);
-    
+
     return factory;
 };

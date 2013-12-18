@@ -34,6 +34,9 @@ assert.equal( factory.team('Foo').taskSeq(), 'myapp:team#Foo.taskSeq' );
 assert.equal( factory.team('Foo').members(), 'myapp:team#Foo.members' );
 assert.equal( factory.team('Foo').tasks(), 'myapp:team#Foo.tasks' );
 
+// Shouldn't be stupid
+assert.throws( function () { factory.u(undefined); }, Error, 'Should not let me get with undefined key' );
+
 assert.throws( function() { factory.taskSeq(); }, Error, 'Should die');
 
 assert.equal( factory.foo('FooThing').bar(), 'myapp:foo#FooThing.bar' );
