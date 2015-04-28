@@ -54,14 +54,17 @@ Key.prototype.collection = function (plural, singular, cbs) {
     util.inherits(SubKey, this.constructor);
 
     this.constructor.prototype[plural] = function () {
+        if (arguments.length !== 0) {
+          throw new Error('Collections do not take a value, did you mean to call ' + singular + '("' + arguments[0] + '") instead of ' + plural + '("' + arguments[0] + '") ?')
+        }
         return new SubKey(joinKeys(this.root, Key._options.collectionSep, plural), cbs && cbs.collection);
     };
 
     this.constructor.prototype[singular] = function (id) {
         var key = joinKeys(this.root, Key._options.collectionSep, singular) + Key._options.memberSep + id;
 
-        if (!id) { throw Error("Getting '" + singular + "' requires an id, as you probably dind't mean to get the key: " + key); }
-        
+        if (!id) { throw Error("Getting '" + singular + "' requires an id, as you probably didn't mean to get the key: " + key); }
+
         return new SubKey(joinKeys(this.root, Key._options.collectionSep, singular) + Key._options.memberSep + id, cbs && cbs.member);
     };
 };

@@ -36,6 +36,7 @@ assert.equal( factory.team('Foo').tasks(), 'myapp:team#Foo.tasks' );
 
 // Shouldn't be stupid
 assert.throws( function () { factory.u(undefined); }, Error, 'Should not let me get with undefined key' );
+assert.throws( function () { factory.users('foo'); }, Error, 'Should not let me provide a key for plural' );
 
 assert.throws( function() { factory.taskSeq(); }, Error, 'Should die');
 
